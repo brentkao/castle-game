@@ -1,0 +1,36 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Inventory {
+  id           Int     @id @default(autoincrement())
+  itemName     String  @db.VarChar(255)
+  quantity     Int     @default(0)
+  playerUserId Int?
+  player       Player? @relation(fields: [playerUserId], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "FK_8f3cdf8de1bd07b1fd2172d1894")
+
+  @@index([playerUserId], map: "FK_8f3cdf8de1bd07b1fd2172d1894")
+  @@map("inventory")
+
+}
+
+model Player {
+  userId            Int         @id @default(autoincrement())
+  name              String      @unique(map: "IDX_7baa5220210c74f8db27c06f8b") @db.VarChar(255)
+  nickname          String      @db.VarChar(500)
+  level             Int         @default(1)
+  experience        Int         @default(0)
+  coin              Int         @default(0)
+  totalSpentCoin    Int         @default(0)
+  diamond           Int         @default(0)
+  totalSpentDiamond Int         @default(0)
+  energy            Int         @default(0)
+  createdAt         DateTime    @default(now()) @db.Timestamp(0)
+  inventory         Inventory[]
+  @@map("player")
+}
